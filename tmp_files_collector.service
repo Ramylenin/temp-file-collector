@@ -1,0 +1,21 @@
+[Unit]
+Description=Temp File Collector Service
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+
+# Default environment variables (these get overridden in postinst if the user changes them)
+Environment="BASE_DIR=/opt/collector"
+Environment="LOG_LEVEL=ERROR"
+
+ExecStart=/usr/bin/python3 /usr/local/bin/tmp_files_collector.py \
+    --base-dir $BASE_DIR \
+    --log-level $LOG_LEVEL
+
+StandardOutput=append:/var/log/tmp_files_collector.log
+StandardError=append:/var/log/tmp_files_collector.err
+
+[Install]
+WantedBy=multi-user.target
