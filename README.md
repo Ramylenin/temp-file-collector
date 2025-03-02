@@ -63,7 +63,7 @@ $ systemctl status tmp_files_collector.service
      CGroup: /system.slice/tmp_files_collector.service
              └─1364710 /usr/bin/python3 /usr/local/bin/tmp_files_collector.py --base-dir /opt/collector/test --log-level DEBUG
 
-Mar 03 00:07:44 arun-Inspiron-14-7430-2-in-1 systemd[1]: Started Temp File Collector Service.
+Mar 03 00:07:44 Inspiron-14-7430-2-in-1 systemd[1]: Started Temp File Collector Service.
 ```
 Once the script exits after one iteration, it can be started again with the systemd restart command `systemctl restart tmp_files_collector.service` if required.
 
