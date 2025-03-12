@@ -85,6 +85,6 @@ The output is written to `output.log`
 ```
 python3 tmp_files_collector.py
 ```
-The output is written to the console.
+The output is written to the console...
 
 
