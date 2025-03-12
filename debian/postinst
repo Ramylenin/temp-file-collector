@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+
+# Stop and disable if already exists
+systemctl stop tmp_files_collector.service
+
+systemctl disable tmp_files_collector.service
+
+systemctl daemon-reload
+
+echo "Please enter the desired base directory for 'tmp' and archives."
+echo "Press [Enter] to use the default (/opt/collector)."
+read BASE_DIR
+if [ -z "$BASE_DIR" ]; then
+    BASE_DIR="/opt/collector"
+    mkdir -p $BASE_DIR
+fi
+
+echo "Please enter the desired logging level (DEBUG, INFO, WARNING, ERROR)."
+echo "Press [Enter] to default to ERROR."
+read LOG_LEVEL
+if [ -z "$LOG_LEVEL" ]; then
+    LOG_LEVEL="ERROR"
+fi
+
+# Now we modify the systemd file in place:
+SERVICE_FILE="/lib/systemd/system/tmp_files_collector.service"
+
+# If lines for Environment exist, let's replace them using sed. 
+# We assume they exist as: Environment="BASE_DIR=..." and Environment="LOG_LEVEL=..."
+sed -i "s|^Environment=\"BASE_DIR=.*$|Environment=\"BASE_DIR=$BASE_DIR\"|" "$SERVICE_FILE"
+sed -i "s|^Environment=\"LOG_LEVEL=.*$|Environment=\"LOG_LEVEL=$LOG_LEVEL\"|" "$SERVICE_FILE"
+
+# Reload systemd so it picks up changes
+systemctl daemon-reload
+
+# Enable the service so it starts on boot
+systemctl enable tmp_files_collector.service
+
+# Restart the service to apply new env variables
+systemctl restart tmp_files_collector.service
+
+echo "=================================================="
+echo "tmp_files_collector service installed/started with:"
+echo "  BASE_DIR=$BASE_DIR"
+echo "  LOG_LEVEL=$LOG_LEVEL"
+echo "=================================================="
+
+exit 0
